@@ -1,0 +1,7 @@
+.DS_Store
+node_modules
+bower
+*.pyc
+static/img/bank/**/*.jpg
+.idea
+bank.db
