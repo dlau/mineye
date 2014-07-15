@@ -72,6 +72,7 @@ def similar():
 def bank():
     if request.method == 'POST':
         file = request.files['file']
+        print file
         if file:
             tmpfile = join(
                 tempfile.gettempdir(),
@@ -110,4 +111,5 @@ def bank():
     return '', 400
 if __name__ == "__main__":
     #todo: toggle debug from config
+    app.debug = True
     app.run()
