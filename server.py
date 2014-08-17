@@ -107,8 +107,12 @@ def bank():
             pass
         #note, will spit back any non dir
         files = get_bank_images()
-        return json.dumps(['/'+f for f in files[0:limit]])
+        return json.dumps({
+            'count' : im.get_count(),
+            'latest' : ['/'+f for f in files[0:limit]]
+            })
     return '', 400
+
 if __name__ == "__main__":
     #todo: toggle debug from config
     app.debug = True

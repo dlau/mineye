@@ -2,6 +2,8 @@ import cv2
 import numpy
 import sqlite3
 import pickle
+from datetime import datetime
+
 
 #max number of images in each matrix, for parallel processing
 DESC_MAX_LEN = 100000
@@ -48,8 +50,8 @@ class _img:
     def match(self, filename, limit=20):
         kp, to_match = get_surf_des(filename)
         img_db = numpy.vstack(numpy.array(self.descs))
-        matches = self.flann.knnMatch(img_db, to_match, k=2)
-
+        #this should be reversed, need to update distance calculation
+        matches = self.flann.knnMatch(img_db, to_match, k=4)
         sim = dict()
         for img in self.imap:
             sim[img['file_name']] = 0
@@ -67,8 +69,13 @@ class _img:
 class img:
     def __init__(self):
         self.ims = [_img()]
+        self.count = 0
+
+    def get_count(self):
+        return self.count
 
     def add_image(self, filename, des=None):
+        self.count += 1
         self.ims[-1].add_image(filename, des=des)
         if len(self.ims[-1]) > DESC_MAX_LEN:
             self.ims.append(_img())
@@ -79,6 +86,7 @@ class img:
 
         def f(instance):
             return instance.match(filename, limit=limit)
+
         res = p.map(f, [i for i in self.ims])
         sim = dict((k,v) for d in res for (k,v) in d.items())
         sorted_sim = sorted(sim.items(), key=lambda x:x[1], reverse=True)[0:limit]

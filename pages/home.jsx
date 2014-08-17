@@ -46,16 +46,18 @@ var View = React.createClass({
   getInitialState : function(){
     return {
       bank : [],
+      count : 0,
       related : []
     };
   },
   refreshBank : function(){
-    $.getJSON('/bank', function(images){
-      if(!images || !images.length){
+    $.getJSON('/bank', function(bank){
+      if(!bank || !bank.latest || !bank.count){
         return;
       }
       this.setState({
-        bank : images
+        bank : bank.latest,
+        count : bank.count
       });
     }.bind(this));
   },
@@ -100,6 +102,7 @@ var View = React.createClass({
         <ul className="thumbs">
           {images}
         </ul>
+        <h3>Total Number of Images: {this.state.count} </h3>
         <h1>Add a file to the bank!</h1>
         <UploadForm action="/bank" value="Upload to bank" method="POST" action="/bank" onComplete={ this.refreshBank }/>
       </div>
