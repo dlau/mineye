@@ -1,7 +1,16 @@
 #Overview
-Very simply, this project demonstrates how to match an image to a bank of pre-existing images.
+Very simply, this project demonstrates how to match an image to a bank of pre-existing images. It contains a simple front-end and image bank. The python implementation of the image bank can be easily adapted for other applications.
 
-It contains a simple front-end and API
+The image comparisons use [SURF: Speeded Up Robust Features](http://www.vision.ee.ethz.ch/~surf/eccv06.pdf) which is **scale, orientation, and to some degree affine invariant**.
+
+A common problem in managing large numbers of images is detecting *slight* duplicates. Using a library like OpenCV which is widely available across platforms and languages is a great way to detect these duplicates.
+
+![scale orientation invariant](http://i.imgur.com/nFASitk.gif)
+
+
+#Animated description
+
+![animation](http://i.cubeupload.com/8nVjdO.gif)
 
 
 #How it works
@@ -15,7 +24,8 @@ To look up an image:
 - For all matches, if the two are within a certain distance threshold, we increment a similary value with respect to that candidate by 1. This creates an arbitrary similarity index.
 - Return the top results
 
-The server is implemented using flask (todo: link) and the front end uses react (todo: link)
+
+The server is implemented using [flask](http://flask.pocoo.org/) and the front end uses [react](http://facebook.github.io/react/)
 
 
 #Install:
@@ -41,26 +51,24 @@ run server:
 `python server.py`
 
 watch for changes on server:
-todo
+uncomment this line in `server.py` `app.debug = True`
+**note: this is by default on**
 
 #Optimization:
 - The implementation is poorly optimized, there is a rudimentary attempt to distribute the "mega matrix" to take advantage of multiple cores. At any sort of scale, you probably want to look into doing some sort of distributed nearest neighbor search.
 
 - By default the server persists the bank data in `bank.db` which is a simple sqlite database with pickled python objects. This is merely for convenience between server restarts. While it is running, the server keeps everything in local memory.
 
-#Closing:
-- Tested with around 200k without issues.
+#Related projects:
+- [isk-daemon](https://github.com/ricardocabral/iskdaemon)
 
+#Notes:
 
-This is only tested on OS X Mavericks, it shouldn't have any problems on linux. It is completely untested on windows.
+- Tested with around 200k images without issues.
 
-#Inputting test data
-Grab any dataset, such as:
+- This is only tested on OS X Mavericks, it shouldn't have any problems on linux. It is completely untested on windows.
 
-[http://www.vision.caltech.edu/Image_Datasets/Caltech256/](http://www.vision.caltech.edu/Image_Datasets/Caltech256/)
-
-untar it and just POST them all to the server
-`find <MY_DATASET_DIR> -name "*.<IMAGE_EXTENSION>" -exec curl -i -F file=@{} \;`
+- [A Sample dataset](http://www.vision.caltech.edu/Image_Datasets/Caltech256/). untar it and just POST them all to the server `find <MY_DATASET_DIR> -name "*.<IMAGE_EXTENSION>" -exec curl -i -F file=@{} \;`
 
 
 #LICENSE
